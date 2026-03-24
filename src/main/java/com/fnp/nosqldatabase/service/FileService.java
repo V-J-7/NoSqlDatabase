@@ -30,30 +30,25 @@ public class FileService {
             return;
         }
 
-        try (DataInputStream dis = new DataInputStream(new BufferedInputStream(new FileInputStream(file)))) {
-
-            while (dis.available() > 0) {
-                Node node = NodeSerializer.readNode(dis);
-                list.add(node);
-            }
+        DataInputStream dis = new DataInputStream(new BufferedInputStream(new FileInputStream(file)));
+        while (dis.available() > 0) {
+            Node node = NodeSerializer.readNode(dis);
+            list.add(node);
         }
+
     }
 
 
     public void addManyToFile(List<Map<String, String>> nodes) throws IOException {
+        DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(file, true)));
         for (Map<String, String> map : nodes) {
             Node newNode = new Node(map);
             list.add(newNode);
-            appendToFile(newNode);
+            NodeSerializer.writeNode(newNode, dos);
         }
 
     }
 
-    private void appendToFile(Node node) throws IOException {
-        try (DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(file)))) {
-            NodeSerializer.writeNode(node, dos);
-        }
-    }
 
     public List<Node> readFromFile() {
         return list;

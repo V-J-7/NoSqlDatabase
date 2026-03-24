@@ -31,14 +31,13 @@ public class FileServiceWithIndex {
             return;
         }
 
-        try (DataInputStream dis = new DataInputStream(new BufferedInputStream(new FileInputStream(file)))) {
-            tree = new BTree(TREE_DEGREE);
-            int totalNodes = dis.readInt();
+        DataInputStream dis = new DataInputStream(new BufferedInputStream(new FileInputStream(file)));
+        tree = new BTree(TREE_DEGREE);
+        int totalNodes = dis.readInt();
 
-            for (int i = 0; i < totalNodes; i++) {
-                Node readNode = NodeSerializer.readNode(dis);
-                tree.insert(readNode);
-            }
+        for (int i = 0; i < totalNodes; i++) {
+            Node readNode = NodeSerializer.readNode(dis);
+            tree.insert(readNode);
         }
     }
 
