@@ -615,7 +615,7 @@ function NoIndexTab({ toast, onMetric, refreshSizes }) {
       const body = bulkDocs.map(doc =>
         Object.fromEntries(doc.map(p => [p.key.trim(), p.value.trim()]))
       );
-      const data = await apiFetch(`${API_BASE}/insert-all`, { method: "POST", body: JSON.stringify(body) });
+      const data = await apiFetch(`${API_BASE}/insert-many`, { method: "POST", body: JSON.stringify(body) });
       setBulkRes(data.data); 
       onMetric("insertNoIndex", data.response_time);
       toast.add(`${bulkDocs.length} docs inserted in ${data.response_time}ms`);
@@ -676,7 +676,7 @@ function NoIndexTab({ toast, onMetric, refreshSizes }) {
       </div>
 
       <div className="card" style={{ "--accent": theme.magenta }}>
-        <div className="card-title">Bulk Insert</div>
+        <div className="card-title">Insert</div>
         <BulkBuilder docs={bulkDocs} onChange={setBulkDocs} />
         {bulkErr && <div className="field-err" style={{ marginTop: 10 }}>{bulkErr}</div>}
         <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 18 }}>
@@ -752,7 +752,7 @@ function WithIndexTab({ toast, onMetric, refreshSizes }) {
       const body = bulkDocs.map(doc =>
         Object.fromEntries(doc.map(p => [p.key.trim(), p.value.trim()]))
       );
-      const data = await apiFetch(`${API_BASE}/index/insert-all`, { method: "POST", body: JSON.stringify(body) });
+      const data = await apiFetch(`${API_BASE}/index/insert-many`, { method: "POST", body: JSON.stringify(body) });
       setBulkRes(data); 
       onMetric("insertWithIndex", data.response_time);
       toast.add(`${bulkDocs.length} indexed docs in ${data.response_time}ms`);
@@ -816,7 +816,7 @@ function WithIndexTab({ toast, onMetric, refreshSizes }) {
       </div>
 
       <div className="card" style={{ "--accent": theme.cyan }}>
-        <div className="card-title">Bulk Insert</div>
+        <div className="card-title">Insert</div>
         <BulkBuilder docs={bulkDocs} onChange={setBulkDocs} />
         {bulkErr && <div className="field-err" style={{ marginTop: 10 }}>{bulkErr}</div>}
         <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 18 }}>

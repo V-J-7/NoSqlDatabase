@@ -26,19 +26,6 @@ public class DatabaseController {
     @Autowired
     DatabaseService databaseService;
 
-    @PostMapping("/insert")
-    @Operation(summary = "Add to database without index")
-    public ResponseEntity<SuccessResponse> add(@RequestBody Map<String, String> data) throws IOException {
-
-        Long startTime = System.nanoTime();
-        databaseService.insertToDatabase(data);
-        Long endTime = System.nanoTime();
-
-        Long responseTime = (endTime-startTime)/1_000_000;
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(SuccessResponse.getResponse("Added to database", responseTime));
-    }
-
     @GetMapping("/get")
     @Operation(summary = "Read from data by a key value pair")
     public ResponseEntity<SuccessResponse> get(
@@ -67,7 +54,7 @@ public class DatabaseController {
         return ResponseEntity.status(HttpStatus.OK).body(SuccessResponse.getResponse(databaseService.getSizeOfDatabase(), null));
     }
 
-    @PostMapping("/insert-all")
+    @PostMapping("/insert-many")
     @Operation(summary = "Insert multiple entries in the database")
     public ResponseEntity<SuccessResponse> insertAll(@RequestBody List<Map<String, String>> entries) throws IOException {
         Long startTime = System.nanoTime();
