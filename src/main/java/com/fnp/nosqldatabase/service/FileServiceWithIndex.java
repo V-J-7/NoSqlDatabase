@@ -3,12 +3,12 @@ package com.fnp.nosqldatabase.service;
 
 import com.fnp.nosqldatabase.constants.BTree;
 import com.fnp.nosqldatabase.constants.Node;
+import com.fnp.nosqldatabase.constants.NodeSerializer;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +22,7 @@ public class FileServiceWithIndex {
     private BTree tree;
 
     @PostConstruct
-    public void loadTree() throws IOException, ClassNotFoundException {
+    public void loadTree() throws IOException {
         if (tree != null) return;
 
         if (!file.exists() || file.length() == 0) {
@@ -31,15 +31,15 @@ public class FileServiceWithIndex {
             return;
         }
 
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
-            tree = (BTree) ois.readObject();
+        try (DataInputStream dis = new DataInputStream(new BufferedInputStream(new FileInputStream(file)))) {
+            tree = new BTree(TREE_DEGREE);
+            int totalNodes = dis.readInt();
+
+            for (int i = 0; i < totalNodes; i++) {
+                Node readNode = NodeSerializer.readNode(dis);
+                tree.insert(readNode);
+            }
         }
-    }
-
-    public void addToFile(Map<String, String> data) throws IOException {
-        tree.insert(new Node(data));
-
-        flush();
     }
 
     public List<Node> search(String username) {
@@ -56,8 +56,14 @@ public class FileServiceWithIndex {
     }
 
     public void flush() throws IOException {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
-            oos.writeObject(tree);
+        try (DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(file)))) {
+            List<Node> list = tree.toList();
+
+            dos.writeInt(list.size());
+
+            for (Node node : list) {
+                NodeSerializer.writeNode(node, dos);
+            }
         }
     }
 

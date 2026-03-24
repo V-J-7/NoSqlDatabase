@@ -27,11 +27,6 @@ public class DatabaseServiceWithIndex {
 
     }
 
-    public void insertToDatabase(Map<String, String> data) throws IOException {
-
-        fileServiceWithIndex.addToFile(data);
-    }
-
     public List<Node> readFromDatabase(String username) {
         List<Node> ans = fileServiceWithIndex.search(username);
         if (ans == null) throw new NoEntryInDatabaseException("No records found");
@@ -53,8 +48,6 @@ public class DatabaseServiceWithIndex {
     public int getSizeOfDatabase() {
         return fileServiceWithIndex.getAll().size();
     }
-
-
 
     public void insertManyToDatabase(List<Map<String, String>> data) throws IOException {
         fileServiceWithIndex.addManyToFile(data);

@@ -570,6 +570,8 @@ function NoIndexTab({ toast, onMetric, refreshSizes }) {
   const [bulkErr,   setBulkErr]   = useState("");
   const [bulkRes,   setBulkRes]   = useState(null);
   const [bulkBusy,  setBulkBusy]  = useState(false);
+  const [numberOfInserts, setNumberOfInserts] = useState(1);
+  const [averageInsertTime, setAverageInsertTime] = useState(0.0) 
 
   const handleSearch = async () => {
     const errs = {};
@@ -617,7 +619,12 @@ function NoIndexTab({ toast, onMetric, refreshSizes }) {
       );
       const data = await apiFetch(`${API_BASE}/insert-many`, { method: "POST", body: JSON.stringify(body) });
       setBulkRes(data.data); 
-      onMetric("insertNoIndex", data.response_time);
+      const averageTimeForOneInsert = data.response_time/bulkDocs.length;
+      const newAverage = (((numberOfInserts-1)*averageInsertTime)+averageTimeForOneInsert)/numberOfInserts
+      console.log(newAverage)
+      setAverageInsertTime(newAverage)
+      setNumberOfInserts(numberOfInserts+bulkDocs.length)
+      onMetric("insertNoIndex", newAverage.toFixed(2));
       toast.add(`${bulkDocs.length} docs inserted in ${data.response_time}ms`);
       refreshSizes();
     } catch (e) { toast.add(e.message, "error"); }
@@ -685,9 +692,6 @@ function NoIndexTab({ toast, onMetric, refreshSizes }) {
             {bulkBusy ? "WRITING..." : `INSERT ${bulkDocs.length} DOC${bulkDocs.length !== 1 ? "S" : ""}`}
           </button>
         </div>
-        {bulkRes && (<><hr className="divider" />
-          <div className="response-block" dangerouslySetInnerHTML={{ __html: prettyJson(bulkRes) }} />
-        </>)}
       </div>
     </div>
   );
@@ -710,6 +714,8 @@ function WithIndexTab({ toast, onMetric, refreshSizes }) {
   const [bulkErr,   setBulkErr]   = useState("");
   const [bulkRes,   setBulkRes]   = useState(null);
   const [bulkBusy,  setBulkBusy]  = useState(false);
+  const [numberOfInserts, setNumberOfInserts] = useState(1);
+  const [averageInsertTime, setAverageInsertTime] = useState(0.0) 
 
   const handleSearch = async () => {
     if (!username.trim()) { setUserErr("Username is required"); return; }
@@ -754,7 +760,11 @@ function WithIndexTab({ toast, onMetric, refreshSizes }) {
       );
       const data = await apiFetch(`${API_BASE}/index/insert-many`, { method: "POST", body: JSON.stringify(body) });
       setBulkRes(data); 
-      onMetric("insertWithIndex", data.response_time);
+      const averageTimeForOneInsert = data.response_time/bulkDocs.length;
+      const newAverage = (((numberOfInserts-1)*averageInsertTime)+averageTimeForOneInsert)/numberOfInserts
+      setAverageInsertTime(newAverage)
+      setNumberOfInserts(numberOfInserts+bulkDocs.length)
+      onMetric("insertWithIndex", newAverage.toFixed(2));
       toast.add(`${bulkDocs.length} indexed docs in ${data.response_time}ms`);
       refreshSizes();
     } catch (e) { 
@@ -825,9 +835,6 @@ function WithIndexTab({ toast, onMetric, refreshSizes }) {
             {bulkBusy ? "INDEXING..." : `INSERT ${bulkDocs.length} DOC${bulkDocs.length !== 1 ? "S" : ""}`}
           </button>
         </div>
-        {bulkRes && (<><hr className="divider" />
-          <div className="response-block" dangerouslySetInnerHTML={{ __html: prettyJson(bulkRes) }} />
-        </>)}
       </div>
     </div>
   );

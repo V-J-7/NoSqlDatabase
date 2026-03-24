@@ -23,10 +23,6 @@ public class DatabaseService {
         fileService.loadList();
     }
 
-    public void insertToDatabase(Map<String, String> map) throws IOException {
-        fileService.addToFile(new Node(map));
-    }
-
     public List<Node> readFromDatabase(String key, String value) {
 
         List<Node> list = fileService.readFromFile();

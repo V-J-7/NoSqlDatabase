@@ -42,8 +42,8 @@ public class BTree implements Serializable {
             newRoot.children[0] = currentRoot;
             splitChild(newRoot, 0, currentRoot);
             insertNonFull(newRoot, username, node);
-        }
-
+        } 
+        
         else {
             insertNonFull(currentRoot, username, node);
         }

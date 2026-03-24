@@ -2,6 +2,7 @@ package com.fnp.nosqldatabase.service;
 
 
 import com.fnp.nosqldatabase.constants.Node;
+import com.fnp.nosqldatabase.constants.NodeSerializer;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,10 +18,10 @@ public class FileService {
 
     private final File file = new File("database.db");
 
-    private List<Node> list;
+    private List<Node> list = new LinkedList<>();
 
     @PostConstruct
-    public void loadList() throws IOException, ClassNotFoundException {
+    public void loadList() throws IOException {
         if (list != null) return;
 
         if (!file.exists() || file.length() == 0) {
@@ -29,30 +30,28 @@ public class FileService {
             return;
         }
 
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
-            list = (List<Node>) ois.readObject();
+        try (DataInputStream dis = new DataInputStream(new BufferedInputStream(new FileInputStream(file)))) {
+
+            while (dis.available() > 0) {
+                Node node = NodeSerializer.readNode(dis);
+                list.add(node);
+            }
         }
     }
 
-
-    public void addToFile(Node node) throws IOException {
-
-        list.add(node);
-        flush();
-
-    }
 
     public void addManyToFile(List<Map<String, String>> nodes) throws IOException {
         for (Map<String, String> map : nodes) {
-            list.add(new Node(map));
+            Node newNode = new Node(map);
+            list.add(newNode);
+            appendToFile(newNode);
         }
 
-        flush();
     }
 
-    private void flush() throws IOException {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
-            oos.writeObject(list);
+    private void appendToFile(Node node) throws IOException {
+        try (DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(file)))) {
+            NodeSerializer.writeNode(node, dos);
         }
     }
 

@@ -12,12 +12,12 @@ import java.util.UUID;
 public class Node implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private Long id;
+    private String id;
     private Map<String, String> entry;
 
     public Node(Map<String, String> keyValuePairs) {
 
-        this.id = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
+        this.id = String.valueOf(UUID.randomUUID());
         this.entry = keyValuePairs;
     }
 
