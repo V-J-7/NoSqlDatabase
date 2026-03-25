@@ -356,7 +356,7 @@ function prettyJson(obj) {
 
   const dataEntries = Object.values(obj.data);
   let result = dataEntries.map(item => ({
-    username: item.entry?.username
+    username: item?.entry?.username
   }));
 
   if (result.length === 1) {
@@ -627,7 +627,9 @@ function NoIndexTab({ toast, onMetric, refreshSizes }) {
       onMetric("insertNoIndex", newAverage.toFixed(2));
       toast.add(`${bulkDocs.length} docs inserted in ${data.response_time}ms`);
       refreshSizes();
-    } catch (e) { toast.add(e.message, "error"); }
+    } 
+    
+    catch (e) { toast.add(e.message, "error"); }
     finally { setBulkBusy(false); }
   };
 
@@ -759,7 +761,7 @@ function WithIndexTab({ toast, onMetric, refreshSizes }) {
         Object.fromEntries(doc.map(p => [p.key.trim(), p.value.trim()]))
       );
       const data = await apiFetch(`${API_BASE}/index/insert-many`, { method: "POST", body: JSON.stringify(body) });
-      setBulkRes(data); 
+      setBulkRes(data);
       const averageTimeForOneInsert = data.response_time/bulkDocs.length;
       const newAverage = (((numberOfInserts-1)*averageInsertTime)+averageTimeForOneInsert)/numberOfInserts
       setAverageInsertTime(newAverage)
@@ -835,6 +837,7 @@ function WithIndexTab({ toast, onMetric, refreshSizes }) {
             {bulkBusy ? "INDEXING..." : `INSERT ${bulkDocs.length} DOC${bulkDocs.length !== 1 ? "S" : ""}`}
           </button>
         </div>
+
       </div>
     </div>
   );
