@@ -28,7 +28,7 @@ target/
 build/
 !**/src/main/**/build/
 !**/src/test/**/build/
-
+src/test
 
 node_modules/
 
@@ -37,5 +37,6 @@ database_with_index.db
 
 insert_many_in_database.py
 insert_many_in_database_with_index.py
+stats
 ### VS Code ###
 .vscode/

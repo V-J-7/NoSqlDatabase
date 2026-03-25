@@ -38,7 +38,6 @@ public class FileService {
 
     }
 
-
     public void addManyToFile(List<Map<String, String>> nodes) throws IOException {
         DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(file, true)));
         for (Map<String, String> map : nodes) {

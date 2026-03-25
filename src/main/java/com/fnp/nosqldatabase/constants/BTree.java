@@ -49,20 +49,33 @@ public class BTree implements Serializable {
         }
     }
 
-    public Node search(String username) {
-        return search(root, username);
+    public List<Node> search(String key) {
+        List<Node> results = new ArrayList<>();
+        search(root, key, results);
+
+        return results;
     }
 
-    private Node search(BTreeNode currentNode, String username) {
-        int index = 0;
-        while (index < currentNode.keyCount && username.compareTo(currentNode.keys[index]) > 0) {
-            index++;
+    private void search(BTreeNode x, String key, List<Node> results) {
+        if (x == null) return;
+
+        int i = 0;
+        while (i < x.keyCount && key.compareTo(x.keys[i]) > 0) {
+            i++;
         }
-        if (index < currentNode.keyCount && username.equals(currentNode.keys[index])) {
-            return currentNode.values[index];
+
+        while (i < x.keyCount && key.equals(x.keys[i])) {
+            results.add(x.values[i]);
+
+            if (!x.isLeaf) {
+                search(x.children[i], key, results);
+            }
+            i++;
         }
-        if (currentNode.isLeaf) return null;
-        return search(currentNode.children[index], username);
+
+        if (!x.isLeaf) {
+            search(x.children[i], key, results);
+        }
     }
 
     private void insertNonFull(BTreeNode currentNode, String username, Node node) {
@@ -77,7 +90,9 @@ public class BTree implements Serializable {
             currentNode.keys[index + 1] = username;
             currentNode.values[index + 1] = node;
             currentNode.keyCount++;
-        } else {
+        }
+
+        else {
             while (index >= 0 && username.compareTo(currentNode.keys[index]) < 0) {
                 index--;
             }

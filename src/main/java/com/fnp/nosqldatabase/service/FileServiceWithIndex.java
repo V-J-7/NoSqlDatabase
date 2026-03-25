@@ -4,19 +4,19 @@ package com.fnp.nosqldatabase.service;
 import com.fnp.nosqldatabase.constants.BTree;
 import com.fnp.nosqldatabase.constants.Node;
 import com.fnp.nosqldatabase.constants.NodeSerializer;
+import com.fnp.nosqldatabase.exception.NoEntryInDatabaseException;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 @Service
 @Slf4j
 public class FileServiceWithIndex {
-    private static final int TREE_DEGREE = 4;
+    private static final int TREE_DEGREE = 16;
     private static final File file = new File("database_with_index.db");
 
     private BTree tree;
@@ -43,7 +43,13 @@ public class FileServiceWithIndex {
 
     public List<Node> search(String username) {
         log.info("Number of records: {}", tree.size());
-        return Collections.singletonList(tree.search(username));
+
+        List<Node> result = tree.search(username);
+        if (result.isEmpty()) {
+            throw new NoEntryInDatabaseException("No records found");
+        }
+
+        return result;
     }
 
     public void addManyToFile(List<Map<String, String>> requestMap) throws IOException {

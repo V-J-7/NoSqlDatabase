@@ -43,7 +43,7 @@ public class DatabaseController {
     @GetMapping("/get-all")
     @Operation(summary = "Get n entries from the database")
     public ResponseEntity<SuccessResponse> getAll(
-            @RequestParam("size") int pageSize
+            @RequestParam(value = "size", defaultValue = "10") int pageSize
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(SuccessResponse.getResponse(databaseService.getAllFromDatabase(pageSize), null));
     }
