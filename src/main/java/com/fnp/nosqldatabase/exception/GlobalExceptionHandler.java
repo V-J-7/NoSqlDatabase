@@ -14,17 +14,25 @@ public class GlobalExceptionHandler {
 
 
     @ExceptionHandler(IOException.class)
-    public ResponseEntity<ExceptionResponse> handleException(IOException e) {
+    public ResponseEntity<ExceptionResponse> handleIOException(IOException e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ExceptionResponse.getResponse(e));
     }
 
     @ExceptionHandler(NoEntryInDatabaseException.class)
-    public ResponseEntity<ExceptionResponse> handleException(NoEntryInDatabaseException e) {
+    public ResponseEntity<ExceptionResponse> handleNoEntryException(NoEntryInDatabaseException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionResponse.getResponse(e));
     }
 
     @ExceptionHandler(IndexOutOfBoundsException.class)
     public ResponseEntity<ExceptionResponse> handleIndexOutOfBoundsException(IndexOutOfBoundsException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ExceptionResponse.getResponse(e));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ExceptionResponse> handleException(Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ExceptionResponse.builder()
+                .status("error")
+                .message(e.getMessage())
+                .build());
     }
 }

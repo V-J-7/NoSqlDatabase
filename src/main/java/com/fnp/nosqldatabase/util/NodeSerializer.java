@@ -1,4 +1,6 @@
-package com.fnp.nosqldatabase.constants;
+package com.fnp.nosqldatabase.util;
+
+import com.fnp.nosqldatabase.constants.Node;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

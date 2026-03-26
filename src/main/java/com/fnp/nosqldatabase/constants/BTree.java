@@ -1,15 +1,13 @@
 package com.fnp.nosqldatabase.constants;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BTree implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class BTree {
     private BTreeNode root;
     private final int minimumDegree;
 
-    static class BTreeNode implements Serializable {
+    static class BTreeNode {
         String[] keys;
         Node[] values;
         BTreeNode[] children;
@@ -42,8 +40,8 @@ public class BTree implements Serializable {
             newRoot.children[0] = currentRoot;
             splitChild(newRoot, 0, currentRoot);
             insertNonFull(newRoot, username, node);
-        } 
-        
+        }
+
         else {
             insertNonFull(currentRoot, username, node);
         }
@@ -126,8 +124,8 @@ public class BTree implements Serializable {
         for (int j = parentNode.keyCount; j >= splitIndex + 1; j--) {
             parentNode.children[j + 1] = parentNode.children[j];
         }
-        parentNode.children[splitIndex + 1] = newChild;
 
+        parentNode.children[splitIndex + 1] = newChild;
         for (int j = parentNode.keyCount - 1; j >= splitIndex; j--) {
             parentNode.keys[j + 1] = parentNode.keys[j];
             parentNode.values[j + 1] = parentNode.values[j];

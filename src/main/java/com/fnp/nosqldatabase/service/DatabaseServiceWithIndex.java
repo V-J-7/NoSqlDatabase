@@ -39,6 +39,13 @@ public class DatabaseServiceWithIndex {
         List<Node> records = fileServiceWithIndex.getAll();
         List<Node> result = new ArrayList<>();
 
+        int size = getSizeOfDatabase();
+
+        if (numberOfElements > size) {
+            numberOfElements = size;
+        }
+
+
         for (int i = 0; i < numberOfElements; i++) {
             result.add(records.get(i));
         }

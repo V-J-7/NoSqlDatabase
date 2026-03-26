@@ -3,7 +3,7 @@ package com.fnp.nosqldatabase.service;
 
 import com.fnp.nosqldatabase.constants.BTree;
 import com.fnp.nosqldatabase.constants.Node;
-import com.fnp.nosqldatabase.constants.NodeSerializer;
+import com.fnp.nosqldatabase.util.NodeSerializer;
 import com.fnp.nosqldatabase.exception.NoEntryInDatabaseException;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -31,14 +31,16 @@ public class FileServiceWithIndex {
             return;
         }
 
-        DataInputStream dis = new DataInputStream(new BufferedInputStream(new FileInputStream(file)));
-        tree = new BTree(TREE_DEGREE);
-        int totalNodes = dis.readInt();
+        try (DataInputStream dis = new DataInputStream(new BufferedInputStream(new FileInputStream(file)))) {
+            tree = new BTree(TREE_DEGREE);
+            int totalNodes = dis.readInt();
 
-        for (int i = 0; i < totalNodes; i++) {
-            Node readNode = NodeSerializer.readNode(dis);
-            tree.insert(readNode);
+            for (int i = 0; i < totalNodes; i++) {
+                Node readNode = NodeSerializer.readNode(dis);
+                tree.insert(readNode);
+            }
         }
+
     }
 
     public List<Node> search(String username) {

@@ -3,15 +3,12 @@ package com.fnp.nosqldatabase.constants;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.io.Serializable;
 import java.util.Map;
 import java.util.UUID;
 
 @Getter
 @Setter
-public class Node implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class Node {
     private String id;
     private Map<String, String> entry;
 

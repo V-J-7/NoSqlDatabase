@@ -19,7 +19,7 @@ public class DatabaseService {
     FileService fileService;
     
     @PostConstruct
-    public void init() throws IOException, ClassNotFoundException {
+    public void init() throws IOException {
         fileService.loadList();
     }
 
@@ -49,6 +49,10 @@ public class DatabaseService {
     public List<Node> getAllFromDatabase(int numberOfElements) {
         List<Node> list = fileService.readFromFile();
         List<Node> result = new ArrayList<>();
+
+        if (numberOfElements > list.size()) {
+            numberOfElements = list.size();
+        }
 
         for (int i = 0; i < numberOfElements; i++) {
             result.add(list.get(i));
